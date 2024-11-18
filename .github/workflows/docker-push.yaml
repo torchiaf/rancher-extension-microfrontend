@@ -9,6 +9,9 @@ on:
       tag-name:
         required: true
         type: string
+      working-directory:
+        required: true
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -31,7 +34,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        working-directory: src
+        working-directory: ${{ inputs.working-directory }}
         run: |
           docker build . --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:${{ inputs.tag-name }}
           docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:${{ inputs.tag-name }}
