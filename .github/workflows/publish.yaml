@@ -1,0 +1,16 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push-remote:
+    uses: ./.github/workflows/docker-push.yaml
+    with:
+      image-name: remote
+      tag-name: ${{ github.ref_name }}
+    permissions:
+      contents: read
+      packages: write
