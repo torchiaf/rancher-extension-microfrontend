@@ -83,6 +83,8 @@ export default async function({
   let firstLogin = null;
 
   try {
+
+    console.log('---authenticated---');
     // Load settings, which will either be just the public ones if not logged in, or all if you are
     await store.dispatch('management/findAll', {
       type: MANAGEMENT.SETTING,
@@ -164,6 +166,8 @@ export default async function({
   function noAuth() {
     store.commit('auth/hasAuth', false);
   }
+
+  console.log('--- check logged ---')
 
   if ( store.getters['auth/enabled'] !== false && !store.getters['auth/loggedIn'] ) {
     // `await` so we have one successfully request whilst possibly logged in (ensures fromHeader is populated from `x-api-cattle-auth`)
@@ -255,6 +259,8 @@ export default async function({
 
   try {
     let clusterId = get(route, 'params.cluster');
+
+    console.log('---get cluster id ---', clusterId)
 
     // Route can provide cluster ID via metadata
     if (!clusterId && route) {

@@ -787,10 +787,13 @@ export const actions = {
   }, {
     id, product, oldProduct, oldPkg, newPkg, targetRoute
   }) {
+
     commit('targetRoute', targetRoute);
     const sameCluster = state.clusterId && state.clusterId === id;
     const samePackage = oldPkg?.name === newPkg?.name;
     const isMultiCluster = getters['isMultiCluster'];
+
+    console.log('--- loadCluster ---', id, state.clusterId)
 
     // Are we in the same cluster and package?
     if ( sameCluster && samePackage) {
@@ -855,6 +858,8 @@ export const actions = {
     }
 
     console.log(`Loading ${ isMultiCluster ? 'ECM ' : '' }cluster...`); // eslint-disable-line no-console
+
+    console.log('---newPkgClusterStore---', newPkgClusterStore)
 
     // If we've entered a new store ensure everything has loaded correctly
     if (newPkgClusterStore) {

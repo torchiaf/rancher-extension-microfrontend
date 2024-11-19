@@ -91,6 +91,7 @@ const defaultTransition = {
 };
 
 async function createApp(ssrContext, config = {}) {
+  console.log('---create app---');
   const router = await createRouter(ssrContext, config);
 
   const store = createStore(ssrContext);

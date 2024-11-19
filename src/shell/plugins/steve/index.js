@@ -57,6 +57,8 @@ export const steveStoreInit = (store, ctx) => {
 export default (config) => {
   config.namespace = config.namespace || '';
 
+  console.log('---steve factory ---', config)
+
   config.baseUrl = config.baseUrl || `/${ config.namespace }`;
 
   switch (config.namespace) {
