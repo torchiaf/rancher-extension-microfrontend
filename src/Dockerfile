@@ -12,4 +12,4 @@ RUN yarn build
 
 EXPOSE 80
 ENTRYPOINT ["yarn"]
-CMD ["start"]
+CMD ["start:prod"]
