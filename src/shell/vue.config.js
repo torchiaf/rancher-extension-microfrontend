@@ -458,10 +458,10 @@ module.exports = function(dir, _appConfig) {
       const loaders = [
         {
           test: /\.svg$/,
-          loader: "babel-loader"
-        },
+          loader: 'vue-svg-loader',
+         },
         {
-          test: /\.(woff|woff2|ttf|svg)$/i,
+          test: /\.(woff|woff2|ttf)$/i,
           loader: 'url-loader',
           options: {
             limit: 10000

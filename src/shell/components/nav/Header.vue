@@ -359,14 +359,7 @@ export default {
         v-if="isSingleProduct && !isRancherInHarvester"
         :to="singleProductLogoRoute"
       >
-        <BrandImage
-          v-if="isSingleProduct.supportCustomLogo"
-          class="side-menu-logo"
-          file-name="harvester.svg"
-          :support-custom-logo="true"
-        />
         <img
-          v-else
           class="side-menu-logo"
           :src="isSingleProduct.logo"
         >
