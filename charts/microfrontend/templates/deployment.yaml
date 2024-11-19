@@ -51,6 +51,10 @@ spec:
               value: {{ .Values.remote.api }}
             - name: RANCHER_ENV
               value: {{ .Values.remote.rancherEnv }}
+            - name: ROUTER_BASE
+              value: {{ .Values.remote.routerBase }}
+            - name: RESOURCE_BASE
+              value: {{ .Values.remote.resourceBase }}
         - name: {{ .Chart.Name }}-proxy
           args:
             - nginx
