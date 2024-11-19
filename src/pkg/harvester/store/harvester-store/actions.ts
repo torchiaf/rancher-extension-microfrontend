@@ -13,6 +13,8 @@ export default {
     // Try and wait until the schema exists before proceeding
     await dispatch('management/waitForSchema', { type: MANAGEMENT.CLUSTER }, { root: true });
 
+    console.log('--- loadCluster 2 ---', id);
+
     // See if it really exists
     const cluster = await dispatch('management/find', {
       type: MANAGEMENT.CLUSTER,
