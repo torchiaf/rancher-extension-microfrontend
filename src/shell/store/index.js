@@ -50,7 +50,7 @@ export const plugins = [
   }),
   Steve({
     namespace:      STORE.CLUSTER,
-    baseUrl:        '', // URL is dynamically set for the selected cluster
+    baseUrl:        `/k8s/clusters/${ escape('c-m-hl6w427t') }/v1`, // URL is dynamically set for the selected cluster const clusterBase = `/k8s/clusters/${ escape(id) }/v1`;
     supportsStream: false, // true, -- Disabled due to report that it's sometimes much slower in Chrome
     supportsGc:     true, // Enable garbage collection for this store only
   }),
