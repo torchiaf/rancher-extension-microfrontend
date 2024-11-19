@@ -260,7 +260,7 @@ export default async function({
   try {
     let clusterId = get(route, 'params.cluster');
 
-    console.log('---get cluster id ---', clusterId)
+    console.log('---get cluster id ---', clusterId, route);
 
     // Route can provide cluster ID via metadata
     if (!clusterId && route) {
@@ -350,6 +350,8 @@ export default async function({
         targetRoute: route
       })
     ]);
+
+    console.log('--- post loadCluster ---', clusterId)
 
     if (!clusterId) {
       clusterId = store.getters['defaultClusterId']; // This needs the cluster list, so no parallel

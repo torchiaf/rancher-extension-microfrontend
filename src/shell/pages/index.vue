@@ -10,6 +10,7 @@ export default {
   middleware({
     redirect, store, app, route
   } ) {
+    console.log('--- REDIRECT ---')
     const seenWhatsNew = store.getters['prefs/get'](SEEN_WHATS_NEW);
     const versionInfo = getVersionInfo(store);
     const isSingleProduct = store.getters['isSingleProduct'];
