@@ -456,6 +456,17 @@ module.exports = function(dir, _appConfig) {
       }
 
       const loaders = [
+        {
+          test: /\.svg$/,
+          loader: 'vue-svg-loader',
+         },
+        {
+          test: /\.(woff|woff2|ttf)$/i,
+          loader: 'url-loader',
+          options: {
+            limit: 10000
+          },
+        },
         // Ensure there is a fallback for browsers that don't support web workers
         {
           test:    /web-worker.[a-z-]+.js/i,
