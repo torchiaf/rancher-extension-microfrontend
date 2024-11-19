@@ -73,6 +73,7 @@ export default {
       unwatchPin:       undefined,
       wmPin:            null,
       draggable:        false,
+      showHeader:       true,
     };
   },
 
@@ -326,6 +327,10 @@ export default {
   },
 
   mounted() {
+
+    window.addEventListener('message', this.receiveMessage);
+    window.parent.postMessage({ action: 'ready', origin: 'remote' });
+
     // Sync the navigation tree on fresh load
     this.$nextTick(() => this.syncNav());
 
@@ -343,6 +348,24 @@ export default {
   },
 
   methods: {
+    receiveMessage(event) {
+      const msg = event.data;
+
+      if (msg.origin !== 'host') {
+        return;
+      }
+
+      switch (msg.action) {
+        case 'show-header':
+          console.log('--- HOST msg ---', msg);
+          this.showHeader = msg.value;
+          break;
+      
+        default:
+          break;
+      }
+    },
+
     async setClusterAsLastRoute() {
       if (!this.clusterId || this.clusterId === BLANK_CLUSTER) {
         return;
@@ -627,9 +650,12 @@ export default {
     <div
       v-if="managementReady"
       class="dashboard-content"
-      :class="{[pinClass]: true}"
+      :class="{
+        [pinClass]: true,
+        ['show-header']: showHeader
+      }"
     >
-      <Header />
+      <Header v-if="showHeader"/>
       <nav
         v-if="clusterReady"
         class="side-nav"
@@ -767,7 +793,7 @@ export default {
         <nuxt class="outlet" />
       </main>
       <div
-        v-if="$refs.draggableZone"
+        v-if="$refs.draggableZone && showHeader"
         class="wm"
         :class="{
           'drag-end': !$refs.draggableZone.drag.active,
@@ -814,30 +840,39 @@ export default {
     overflow-y: auto;
     min-height: 0px;
 
-    &.pin-right {
-      grid-template-areas:
-        "header  header  header"
-        "nav      main     wm";
-      grid-template-rows:    var(--header-height) auto;
-      grid-template-columns: var(--nav-width)     auto var(--wm-width, 0px);
-    }
+    // &.pin-right {
+    //   grid-template-areas:
+    //     "header  header  header"
+    //     "nav      main     wm";
+    //   grid-template-rows:    var(--header-height) auto;
+    //   grid-template-columns: var(--nav-width)     auto var(--wm-width, 0px);
+    // }
 
     &.pin-bottom {
-      grid-template-areas:
-        "header  header"
-        "nav       main"
-        "wm         wm";
-      grid-template-rows:    var(--header-height) auto  var(--wm-height, 0px);
-      grid-template-columns: var(--nav-width)     auto;
-    }
-
-    &.pin-left {
-      grid-template-areas:
+      &.show-header {
+        grid-template-areas:
         "header  header  header"
         "wm       nav     main";
-      grid-template-rows:    var(--header-height) auto;
-      grid-template-columns: var(--wm-width, 0px) var(--nav-width) auto;
+        grid-template-rows:    var(--header-height) auto;
+        grid-template-columns: var(--wm-width, 0px) var(--nav-width) auto;
+      }
+      
+      &:not(.show-header){
+        grid-template-areas:
+        "nav       main"
+        "wm         wm";
+        grid-template-rows:    auto  0;
+        grid-template-columns: var(--nav-width)     auto;
+      }
     }
+
+    // &.pin-left {
+    //   grid-template-areas:
+    //     "header  header  header"
+    //     "wm       nav     main";
+    //   grid-template-rows:    var(--header-height) auto;
+    //   grid-template-columns: var(--wm-width, 0px) var(--nav-width) auto;
+    // }
 
     > HEADER {
       grid-area: header;
