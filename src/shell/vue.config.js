@@ -366,6 +366,8 @@ module.exports = function(dir, _appConfig) {
 
     outputDir,
 
+    assetsDir: 'assets',
+
     pages: {
       index: {
         entry:    path.join(SHELL_ABS, '/initialize/client.js'),
