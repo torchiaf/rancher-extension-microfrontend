@@ -1,6 +1,6 @@
 # Harvester Dashboard
 
-Harvester Dashboard UI, Harvester is an open-source hyper-converged infrastructure (HCI) software built on Kubernetes.
+Harvester Dashboard UI, Harvester is an open-source hyper-converged infrastructure (HCI) software built on Kubernetes. 
 
 ## Running for Development
 
