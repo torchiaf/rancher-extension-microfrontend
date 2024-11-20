@@ -51,7 +51,7 @@ data:
           add_header          X-Proxy-Cache $upstream_cache_status;
           add_header          Cache-Control "public";
           
-          proxy_pass     https://localhost:8005/;
+          proxy_pass     https://localhost:{{ .Values.remote.port }}/;
 
           sub_filter_once off;
 

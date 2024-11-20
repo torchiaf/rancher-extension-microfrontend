@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 remote:
+  port: 8005
   api: "https://rancher.192.168.0.141.sslip.io"
   rancherEnv: "harvester"
   pathPrefix: /remote/
@@ -96,12 +97,6 @@ livenessProbe:
   httpGet:
     path: /
     port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-  periodSeconds: 5
-  failureThreshold: 99
 
 #This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
