@@ -52,9 +52,9 @@ spec:
             - name: RANCHER_ENV
               value: {{ .Values.remote.rancherEnv }}
             - name: ROUTER_BASE
-              value: /api/v1/namespaces/{{ .Release.Namespace }}/services/http:{{ include "microfrontend.fullname" . }}:{{ .Values.service.port }}/proxy{{ .Values.remote.routerBase }}
+              value: /api/v1/namespaces/{{ .Release.Namespace }}/services/http:{{ include "microfrontend.fullname" . }}:{{ .Values.service.port }}/proxy{{ .Values.remote.pathPrefix }}
             - name: RESOURCE_BASE
-              value: {{ .Values.remote.resourceBase }}
+              value: {{ .Values.remote.pathPrefix }}
         - name: {{ .Chart.Name }}-proxy
           args:
             - nginx
