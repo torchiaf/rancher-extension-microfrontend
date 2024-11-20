@@ -10,8 +10,8 @@ harvesterManager:
   microfrontend:
     install:
       warning:
-        notInstalled: "The Harvester Microfrontend is not installed"
-        notReady: "The Harvester Microfrontend is updating"
+        notInstalled: "Harvester Microfrontend is not installed"
+        notReady: "Harvester Microfrontend is updating"
   rke:
     templateError: Incorrect template format
   affinity:
