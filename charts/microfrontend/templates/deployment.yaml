@@ -40,6 +40,14 @@ spec:
             - name: http
               containerPort: {{ .Values.remote.port }}
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.remote.pathPrefix }}
+              port: {{ .Values.remote.port }}
+              scheme: HTTPS
+            initialDelaySeconds: 25
+            periodSeconds: 5
+            failureThreshold: 99
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
