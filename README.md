@@ -3,5 +3,5 @@
 ## Helm installation
 
 ```
-helm install microfrontend charts/microfrontend
+helm install harvester charts/microfrontend
 ```

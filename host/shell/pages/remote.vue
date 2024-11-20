@@ -26,7 +26,7 @@ export default {
     },
 
     src() {
-      const proxyUrl = '/api/v1/namespaces/default/services/http:microfrontend:80/proxy/';
+      const proxyUrl = '/api/v1/namespaces/default/services/http:harvester-microfrontend:80/proxy/';
 
       return `https://${ window.location.host }${ proxyUrl }remote/harvester/c/${ this.id }/harvesterhci.io.dashboard#vm`;
     }
