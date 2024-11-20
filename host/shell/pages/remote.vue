@@ -11,7 +11,6 @@ export default {
 
   data() {
     return {
-      src: 'https://localhost:8005/api/v1/namespaces/default/services/http:microfrontend:80/proxy/remote/harvester/c/c-m-hl6w427t/harvesterhci.io.dashboard#vm',
       iframe: null,
     };
   },
@@ -19,6 +18,18 @@ export default {
   mounted() {
     window.addEventListener('message', this.receiveMessage);
     this.init();
+  },
+
+  computed: {
+    id () {
+      return this.$route.params.clusterName;
+    },
+
+    src() {
+      const proxyUrl = '/api/v1/namespaces/default/services/http:microfrontend:80/proxy/';
+
+      return `https://${ window.location.host }${ proxyUrl }remote/harvester/c/${ this.id }/harvesterhci.io.dashboard#vm`;
+    }
   },
 
   methods: {
@@ -37,7 +48,7 @@ export default {
     },
 
     onload(v) {
-      console.log('--- REMOTE LOADED ---', v)
+      console.log('--- REMOTE LOADED ---', v);
     },
 
     receiveMessage(event) {
@@ -55,7 +66,7 @@ export default {
 
       switch (msg.action) {
         case 'ready':
-          console.log('--- REMOTE msg ---', msg)
+          console.log('--- REMOTE msg ---', msg);
           this.iframe?.contentWindow?.postMessage({ action: 'show-header', value: false, origin: 'host' });
           break;
       

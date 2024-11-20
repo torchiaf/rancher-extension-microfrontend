@@ -105,14 +105,13 @@ export default {
       }
     },
 
-    goToRemote() {
-      console.log('GO TO CLUSTER')
-    
+    goToRemote(row) {    
       this.$router.push({
         name: 'c-cluster-resource-remote',
         params: {
-          product: 'harvesterManager',
-          cluster: '_',
+          product:     'harvesterManager',
+          cluster:     '_',
+          clusterName: row.status.clusterName,
         }
       });
     }
