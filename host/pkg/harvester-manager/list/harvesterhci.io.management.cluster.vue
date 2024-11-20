@@ -5,9 +5,11 @@ import ResourceTable from '@shell/components/ResourceTable';
 import Masthead from '@shell/components/ResourceList/Masthead';
 import Loading from '@shell/components/Loading';
 import { HARVESTER_NAME as VIRTUAL } from '@shell/config/features';
-import { CAPI, HCI, MANAGEMENT } from '@shell/config/types';
+import { CAPI, HCI, MANAGEMENT, WORKLOAD_TYPES } from '@shell/config/types';
 import { isHarvesterCluster } from '@shell/utils/cluster';
 import { allHash } from '@shell/utils/promise';
+
+const HARVESTER_MICRO_DEPLOYMENT_ID = 'default/harvester-microfrontend';
 
 export default {
   components: {
@@ -34,7 +36,8 @@ export default {
 
     const hash = await allHash({
       hciClusters:  this.$store.dispatch(`${ inStore }/findAll`, { type: HCI.CLUSTER }),
-      mgmtClusters: this.$store.dispatch(`${ inStore }/findAll`, { type: MANAGEMENT.CLUSTER })
+      mgmtClusters: this.$store.dispatch(`${ inStore }/findAll`, { type: MANAGEMENT.CLUSTER }),
+      deployments:  this.$store.dispatch(`${ inStore }/findAll`, { type: WORKLOAD_TYPES.DEPLOYMENT }),
     });
 
     this.hciClusters = hash.hciClusters;
@@ -82,8 +85,22 @@ export default {
     },
 
     typeDisplay() {
-      return ''
+      return '';
     },
+
+    harvesterExtensionMicro() {
+      const deployments = this.$store.getters['management/all'](WORKLOAD_TYPES.DEPLOYMENT);
+
+      const harvesterMicro = deployments?.find((deploy) => deploy.id === HARVESTER_MICRO_DEPLOYMENT_ID);
+
+      if (!harvesterMicro) {
+        return 'not-installed';
+      }
+      if (harvesterMicro.state !== 'active') {
+        return 'not-ready';
+      }
+      return 'active';
+    }
   },
 
   methods: {
@@ -122,71 +139,74 @@ export default {
 <template>
   <Loading v-if="$fetchState.pending" />
   <div v-else>
-    <Masthead
-      :schema="realSchema"
-      :resource="resource"
-      :is-creatable="false"
-      :type-display="typeDisplay"
-    >
-      <template #typeDescription>
-        <TypeDescription :resource="hResource" />
-      </template>
-
-      <template
-        v-if="canCreateCluster"
-        #extraActions
+    <div v-if="harvesterExtensionMicro === 'active'">
+      <Masthead
+        :schema="realSchema"
+        :resource="resource"
+        :is-creatable="false"
+        :type-display="typeDisplay"
       >
-        <router-link
-          :to="importLocation"
-          class="btn role-primary"
-        >
-          {{ t('cluster.importAction') }}
-        </router-link>
-      </template>
-    </Masthead>
+        <template #typeDescription>
+          <TypeDescription :resource="hResource" />
+        </template>
 
-    <ResourceTable
-      v-if="rows && rows.length"
-      :schema="schema"
-      :rows="rows"
-      :is-creatable="true"
-      :namespaced="false"
-      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
-    >
-      <template #col:name="{row}">
-        <td>
-          <span class="cluster-link">
-            <a
-              v-if="row.isReady"
-              class="link"
-              :disabled="navigating ? true : null"
-              @click="goToRemote(row)"
-            >{{ row.nameDisplay }}</a>
-            <span v-else>
-              {{ row.nameDisplay }}
+        <template
+          v-if="canCreateCluster"
+          #extraActions
+        >
+          <router-link
+            :to="importLocation"
+            class="btn role-primary"
+          >
+            {{ t('cluster.importAction') }}
+          </router-link>
+        </template>
+      </Masthead>
+      <ResourceTable
+        v-if="rows && rows.length"
+        :schema="schema"
+        :rows="rows"
+        :is-creatable="true"
+        :namespaced="false"
+        :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      >
+        <template #col:name="{row}">
+          <td>
+            <span class="cluster-link">
+              <a
+                v-if="row.isReady"
+                class="link"
+                :disabled="navigating ? true : null"
+                @click="goToRemote(row)"
+              >{{ row.nameDisplay }}</a>
+              <span v-else>
+                {{ row.nameDisplay }}
+              </span>
+              <i
+                class="icon icon-spinner icon-spin ml-5"
+                :class="{'navigating': navigating === row.id}"
+              />
             </span>
-            <i
-              class="icon icon-spinner icon-spin ml-5"
-              :class="{'navigating': navigating === row.id}"
-            />
-          </span>
-        </td>
-      </template>
+          </td>
+        </template>
 
-      <template #cell:harvester="{row}">
-        <router-link
-          class="btn btn-sm role-primary"
-          :to="row.detailLocation"
-        >
-          {{ t('harvesterManager.manage') }}
-        </router-link>
-      </template>
-    </ResourceTable>
-    <div v-else>
-      <div class="no-clusters">
-        {{ t('harvesterManager.cluster.none') }}
+        <template #cell:harvester="{row}">
+          <router-link
+            class="btn btn-sm role-primary"
+            :to="row.detailLocation"
+          >
+            {{ t('harvesterManager.manage') }}
+          </router-link>
+        </template>
+      </ResourceTable>
+      <div v-else>
+        <div class="no-clusters">
+          {{ t('harvesterManager.cluster.none') }}
+        </div>
+        <hr class="info-section">
       </div>
-      <hr class="info-section">
+    </div>
+    <template v-if="harvesterExtensionMicro !== 'active' || !rows || !rows.length">
       <div class="logo">
         <BrandImage
           file-name="harvester.png"
@@ -196,10 +216,29 @@ export default {
       <div class="tagline">
         <div>{{ t('harvesterManager.cluster.description') }}</div>
       </div>
-      <div class="tagline sub-tagline">
+      <div class="tagline">
         <div v-clean-html="t('harvesterManager.cluster.learnMore', {}, true)" />
       </div>
-    </div>
+      <template v-if="harvesterExtensionMicro !== 'active'">
+        <div class="tagline microfrontend-warning-panel">
+          <div class="micro-separator"></div>
+          <template v-if="harvesterExtensionMicro === 'not-installed'">
+            <div
+              v-clean-html="t('harvesterManager.microfrontend.install.warning.notInstalled', {}, true)"
+              class="microfrontend-warning mb-15"
+            />
+            <i class="icon lg icon-x text-error" />
+          </template>
+          <template v-if="harvesterExtensionMicro === 'not-ready'">
+            <div
+              v-clean-html="t('harvesterManager.microfrontend.install.warning.notReady', {}, true)"
+              class="microfrontend-warning mb-15"
+            />
+            <i class="icon lg icon-spinner icon-spin" />
+          </template>
+        </div>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -243,6 +282,26 @@ export default {
       max-width: 80%;
       text-align: center;
     }
+  }
+
+  .micro-separator {
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    width: 50%;
+  }
+
+  .microfrontend-warning-panel {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .microfrontend-warning {
+    font-size: 24px !important;
+    font-weight: 400;
+  }
+
+  .lg {
+    font-size: 30px;
   }
 
  .link {
