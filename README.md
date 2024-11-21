@@ -1,6 +1,6 @@
 # rancher-extension-microfrontend
 
-1. Install the Harvester Microfrontend
+1. Install Harvester Microfrontend
 
     ```
     helm install harvester charts/microfrontend
