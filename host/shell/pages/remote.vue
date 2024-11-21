@@ -83,8 +83,7 @@ export default {
 </script>
 
 <template>
-  <div id="iframe-parent">
-  </div>
+  <div id="iframe-parent" />
 </template>
 
 <style lang="scss">

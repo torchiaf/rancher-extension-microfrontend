@@ -4,7 +4,7 @@
 
 remote:
   port: 8005
-  api: "https://rancher.192.168.0.141.sslip.io"
+  api: "https://rancher:443"
   rancherEnv: "harvester"
   pathPrefix: /remote/
 
